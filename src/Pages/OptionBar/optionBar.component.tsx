@@ -10,10 +10,15 @@ import DragAbleDiv from "../../Components/DragAbleDiv";
 interface OptionBar {}
 
 const Div = styled.div`
-  width: 40%;
+  width: 50%;
 `;
 const H4 = styled.h4`
   text-align: center;
+`;
+
+const DivForFilters = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const OptionBar: React.FC<OptionBar> = (props) => {
@@ -22,7 +27,6 @@ const OptionBar: React.FC<OptionBar> = (props) => {
     columns: 0,
     obstructions: 0,
   };
-  const [selectedDivId, onSelectedDivId] = useState<string[]>([]);
   const [isSelected, setIsSelect] = useState<boolean>(false);
   const [blockedDivId, setBlockedDivId] = useState<string[]>([]);
   const [grid, setGrid] = useState<gridType>(initialGrid);
@@ -138,8 +142,8 @@ const OptionBar: React.FC<OptionBar> = (props) => {
   };
   return (
     <div>
-      <Box component="div">
-        <Div>
+      <DivForFilters>
+        <div>
           <H4>Waterflow simulator</H4>
           <InputLabel>Number of Rows</InputLabel>
           <SingleRangeSliderComponent
@@ -156,13 +160,17 @@ const OptionBar: React.FC<OptionBar> = (props) => {
             getRangeValue={onChangeObstruction}
             value={grid.obstructions}
           />
-          <Button variant="outlined" onClick={clearAll}>
+          <Button
+            style={{ width: "100%" }}
+            variant="outlined"
+            onClick={clearAll}
+          >
             Clear
           </Button>
-        </Div>
-      </Box>
+        </div>
+      </DivForFilters>
       <div style={{ display: "flex" }}>
-        <Div>
+        <Div style={{ width: "70%" }}>
           <GridCreator
             blockedDivId={blockedDivId}
             onSelect={onSelect}
@@ -174,7 +182,7 @@ const OptionBar: React.FC<OptionBar> = (props) => {
               .join(" ")}
           />
         </Div>
-        <Div>
+        <Div style={{ width: "30%" }}>
           <DragAbleDiv obstructions={grid.obstructions} drag={drag} />
         </Div>
       </div>

@@ -18,6 +18,7 @@ const RangeSliderContainer = styled.div`
 const Form = styled.form`
   margin: auto 0;
   padding: 20px;
+  width: 500px;
 `;
 
 const SingleRangeSliderComponent: React.FC<RangeSliderComponent> = (props) => {
