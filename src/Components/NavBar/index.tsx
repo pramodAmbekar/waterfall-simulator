@@ -1,7 +1,7 @@
-import React from 'react';
-import { makeStyles } from '@mui/styles';
-import MenuIcon from '@mui/icons-material/Menu';
-import {AppBar, Toolbar, Typography, IconButton} from "@mui/material"
+import React from "react";
+import { makeStyles } from "@mui/styles";
+import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,10 +23,15 @@ export default function ButtonAppBar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Resume Builder
+            WaterFlow Simulator
           </Typography>
           {/* <Button color="inherit">Login</Button> */}
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+          >
             <MenuIcon />
           </IconButton>
         </Toolbar>
