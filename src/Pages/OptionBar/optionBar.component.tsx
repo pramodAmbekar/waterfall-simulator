@@ -166,6 +166,13 @@ const OptionBar: React.FC<OptionBar> = (props) => {
           </Button>
         </div>
       </DivForFilters>
+      <H4>
+        {grid.rows > 0 && grid.columns > 0
+          ? blockedDivId.length === grid.obstructions
+            ? "Select the Waterflow start point by clicking on any of the blue boxes"
+            : "Drag the Obstrauctions and place it inside the grid."
+          : ""}
+      </H4>
       <div style={{ display: "flex" }}>
         <Div style={{ width: "70%" }}>
           <GridCreator

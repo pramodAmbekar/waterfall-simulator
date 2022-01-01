@@ -13,6 +13,8 @@ const GridItem = styled.div`
   font-size: 30px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.8);
+  transition-duration: 2s;
+  // transition-delay: 1s;
 `;
 
 interface GridCreatorProps {
@@ -39,7 +41,7 @@ const GridCreator: React.FC<GridCreatorProps> = (props) => {
                       row === 0 &&
                       props.blockedDivId.length === props.grid.obstructions &&
                       !props.blockedDivId.includes(`${row} ${column}`)
-                        ? "#1976d2"
+                        ? "#82b5e7"
                         : "white",
                   }}
                   onClick={
