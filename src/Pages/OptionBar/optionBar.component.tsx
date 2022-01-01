@@ -44,23 +44,20 @@ const OptionBar: React.FC<OptionBar> = (props) => {
     dragingId.style.backgroundColor = "grey";
     dragingId.draggable = false;
     setBlockedDivId((old) => [...old, ev.target.id]);
-    // ev.target.appendChild(document.getElementById(data));
   }
 
   const onSelect = (e: any) => {
     let rowCol: string[] = [e.target.id];
     let rowColLocal: string[] = e.target.id.split(" ");
 
-    // onSelectedDivId(rowCol);
-
-    for (let i = 0; i < grid.columns; i++) {
-      if (!blockedDivId.includes(`0 ${i}`)) {
-        const xyz: any = document.getElementById(`0 ${i}`);
-        xyz.style.backgroundColor = "white";
-      }
-    }
-
     if (!isSelected) {
+      for (let i = 0; i < grid.columns; i++) {
+        if (!blockedDivId.includes(`0 ${i}`)) {
+          const xyz: any = document.getElementById(`0 ${i}`);
+          xyz.style.backgroundColor = "white";
+        }
+      }
+
       for (let row = 0; row < grid.rows; row++) {
         for (let col = 0; col < grid.columns; col++) {
           if (
@@ -177,6 +174,7 @@ const OptionBar: React.FC<OptionBar> = (props) => {
             grid={grid}
             drop={drop}
             allowDrop={allowDrop}
+            isSelected={isSelected}
             gridTemplateColumns={Array.apply(null, new Array(grid.columns))
               .map((item) => "auto")
               .join(" ")}

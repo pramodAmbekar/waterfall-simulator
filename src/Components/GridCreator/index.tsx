@@ -22,6 +22,7 @@ interface GridCreatorProps {
   drop: (e: any) => void;
   onSelect: (e: any) => void;
   blockedDivId: string[];
+  isSelected: boolean;
 }
 
 const GridCreator: React.FC<GridCreatorProps> = (props) => {
@@ -56,10 +57,6 @@ const GridCreator: React.FC<GridCreatorProps> = (props) => {
             );
           }
         )}
-        {/* <GridItem id={`1`} />
-        <GridItem id={`2`} />
-        <GridItem id={`3`} />
-        <GridItem id={`4`} /> */}
       </GridContainer>
     </div>
   );
