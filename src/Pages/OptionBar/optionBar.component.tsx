@@ -1,13 +1,13 @@
 import { Button, InputLabel } from "@mui/material";
-import { Box } from "@mui/system";
 import React, { useState } from "react";
 import SingleRangeSliderComponent from "../../Components/RangeBar";
 import { gridType } from "../../Services/Types/models";
 import styled from "styled-components";
 import GridCreator from "../../Components/GridCreator";
 import DragAbleDiv from "../../Components/DragAbleDiv";
+import { BLUE_COLOR } from "../../Services/Constants/constants";
 
-interface OptionBar {}
+interface OptionBarProps {}
 
 const Div = styled.div`
   width: 50%;
@@ -21,21 +21,32 @@ const DivForFilters = styled.div`
   justify-content: center;
 `;
 
-const OptionBar: React.FC<OptionBar> = (props) => {
-  const initialGrid: gridType = {
-    rows: 0,
-    columns: 0,
-    obstructions: 0,
-  };
+const initialGrid: gridType = {
+  rows: 0,
+  columns: 0,
+  obstructions: 0,
+};
+const OptionBar: React.FC<OptionBarProps> = (props) => {
   const [isSelected, setIsSelect] = useState<boolean>(false);
   const [blockedDivId, setBlockedDivId] = useState<string[]>([]);
   const [grid, setGrid] = useState<gridType>(initialGrid);
 
-  function allowDrop(ev: any) {
-    ev.preventDefault();
-  }
+  const onChangeRow = (e: any): void => {
+    if (!isSelected) setGrid((old) => ({ ...old, rows: e }));
+  };
+  const onChangeColumn = (e: any): void => {
+    if (!isSelected) setGrid((old) => ({ ...old, columns: e }));
+  };
+  const onChangeObstruction = (e: any): void => {
+    if (!isSelected) setGrid((old) => ({ ...old, obstructions: e }));
+  };
 
-  function drop(ev: any) {
+  const allowDrop = (ev: any): void => {
+    ev.preventDefault();
+  };
+
+  // Method triggered when an element is droped into the div
+  const drop = (ev: any): void => {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
     let targetId: any = document.getElementById(ev.target.id);
@@ -44,13 +55,17 @@ const OptionBar: React.FC<OptionBar> = (props) => {
     dragingId.style.backgroundColor = "grey";
     dragingId.draggable = false;
     setBlockedDivId((old) => [...old, ev.target.id]);
-  }
+  };
 
-  const onSelect = (e: any) => {
-    let rowCol: string[] = [e.target.id];
+  // Method is triggered when start point is selected
+  const onSelect = (e: any): void => {
+    //Storing  selected startpoint in array
+    let SelectedRowCol: string[] = [e.target.id];
     let rowColLocal: string[] = e.target.id.split(" ");
 
+    // checking weather the start point is selected for the first time
     if (!isSelected) {
+      // Once th grid is selected, change the color back to white
       for (let i = 0; i < grid.columns; i++) {
         if (!blockedDivId.includes(`0 ${i}`)) {
           const xyz: any = document.getElementById(`0 ${i}`);
@@ -58,25 +73,35 @@ const OptionBar: React.FC<OptionBar> = (props) => {
         }
       }
 
+      // looping through the row and column for showing water flow simulator
       for (let row = 0; row < grid.rows; row++) {
         for (let col = 0; col < grid.columns; col++) {
+          // case 1: If no obstructions allow water flow in selected start point
+          //and checking each row and  selected column number to add water flow
           if (
             grid.obstructions === 0 &&
-            rowCol.length > 0 &&
+            SelectedRowCol.length > 0 &&
             parseInt(rowColLocal[1]) === col
           ) {
             colorDiv(row, col);
           } else {
-            if (grid.obstructions > 0 && rowCol.length > 0) {
-              for (let rc in rowCol) {
-                const splitRowCol: string[] = rowCol[rc].split(" ");
+            // case 2: if obstructions is selected
+            if (grid.obstructions > 0 && SelectedRowCol.length > 0) {
+              // looping through the start point if any obstructions remove the selected slow point from the start point (rowCol) array and
+              for (let rc in SelectedRowCol) {
+                //Spliting the cuttent row and column id from the seletedDiv array
+                const splitRowCol: string[] = SelectedRowCol[rc].split(" ");
+                // If current col in the splitRowCol
                 if (parseInt(splitRowCol[1]) === col) {
+                  // color the div
                   colorDiv(row, col);
-
-                  rowCol = storeRowColFirst(
+                  // if preseding row is in the obstructions array the remove the
+                  // specific element from the seleted div array and add let and right
+                  //div id in the seleced div array
+                  SelectedRowCol = waterFlowSimulator(
                     row,
                     col,
-                    rowCol,
+                    SelectedRowCol,
                     splitRowCol.join(" ")
                   );
                 }
@@ -89,54 +114,53 @@ const OptionBar: React.FC<OptionBar> = (props) => {
     setIsSelect(true);
   };
 
-  const storeRowColFirst = (
+  // Method to simulate the water flow
+  const waterFlowSimulator = (
     row: number,
     col: number,
-    rowCol: string[],
+    SelectedRowCol: string[],
     splitRowCol: string
   ): string[] => {
+    // if preceding row is in the blocked div array then remove the
+    //div id from the selected div id from and add the right and left column id
     if (blockedDivId.includes(`${row + 1} ${col}`)) {
-      const indexOf = rowCol.indexOf(splitRowCol);
-      rowCol.splice(indexOf, 1);
+      const indexOf = SelectedRowCol.indexOf(splitRowCol);
+      SelectedRowCol.splice(indexOf, 1);
       if (col > 0 && !blockedDivId.includes(`${row} ${col - 1}`)) {
-        rowCol.push(`${row} ${col - 1}`);
+        SelectedRowCol.push(`${row} ${col - 1}`);
         colorDiv(row, col - 1);
       }
       if (
         col !== grid.columns - 1 &&
         !blockedDivId.includes(`${row} ${col + 1}`)
       ) {
-        rowCol.push(`${row} ${col + 1}`);
+        SelectedRowCol.push(`${row} ${col + 1}`);
         colorDiv(row, col + 1);
       }
-      return rowCol;
+      return SelectedRowCol;
     }
-    return rowCol;
+    return SelectedRowCol;
   };
 
+  // Clear all seleted options
   const clearAll = (e: any): void => {
     e.preventDefault();
     setIsSelect(false);
     setBlockedDivId([]);
     setGrid(initialGrid);
   };
+
+  // Method to color the div
   const colorDiv = (row: number, col: number): void => {
     const xyz: any = document.getElementById(`${row} ${col}`);
-    xyz.style.backgroundColor = "#1976d2";
+    xyz.style.backgroundColor = BLUE_COLOR;
   };
+
+  // Method to stor the  draging div in the dataTransfer method of event prototype
   function drag(ev: any) {
     ev.dataTransfer.setData("text", ev.target.id);
   }
 
-  const onChangeRow = (e: any) => {
-    if (!isSelected) setGrid((old) => ({ ...old, rows: e }));
-  };
-  const onChangeColumn = (e: any) => {
-    if (!isSelected) setGrid((old) => ({ ...old, columns: e }));
-  };
-  const onChangeObstruction = (e: any) => {
-    if (!isSelected) setGrid((old) => ({ ...old, obstructions: e }));
-  };
   return (
     <div>
       <DivForFilters>
